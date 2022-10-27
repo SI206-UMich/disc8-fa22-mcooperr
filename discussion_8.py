@@ -14,14 +14,18 @@ def getLink(soup):
 # founded and organize the same into key-value pairs.
 def getAdmissionsInfo2019(soup):
     dictionary = {}
-    founding = soup.find('table', class_='toccolours')
-    #each line on the body is tr
-    lines = founding.find_all('tr')
-    print(lines)
-    for line in lines:
-        #.strip and .text
+    table = soup.find('table', class_='toccolours')
+    body = table.find('tbody')
+    school = body.find_all('tr')
 
-        
+    for tag in school[1:]:
+        td = tag.find_all('td')
+        schoolname = td[0].text
+        year = td[1].text.rstrip()
+        dictionary[schoolname] = year
+    
+    print(dictionary)
+    return dictionary
 def main():
     # Task 1: Create a BeautifulSoup object and name it soup. Refer to discussion slides or lecture slides to complete this
     url = 'https://en.wikipedia.org/wiki/University_of_Michigan'
@@ -40,7 +44,7 @@ class TestAllMethods(unittest.TestCase):
         self.assertEqual(getLink(self.soup), 'https://en.wikipedia.org/wiki/List_of_American_universities_with_Olympic_medals')
 
     def test_admissions_info(self):
-        self.assertEqual(getAdmissionsInfo2019(self.soup), {'Literature, Science, and the Arts': '1841', 
+        self.assertEqual(getAdmissionsInfo2019(self.soup), {'Literature, Science, andthe Arts': '1841', 
                                                             'Medicine': '1850',
                                                             'Engineering': '1854', 
                                                             'Law': '1859',
